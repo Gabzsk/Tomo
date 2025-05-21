@@ -1,26 +1,19 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { PrivateRoute } from "./PrivateRoute";
+import Login from "@/pages/Login";
+import Home from "@/pages/Home";
 
 export function AppRoutes() {
-  // A INSERIR:
-  // path / = element={<Home />}
-  // path /login =  element={<Login />}
-  // path /dashboard =  element={<Dashboard />}
-
   return (
     <Routes>
-      <Route path="/">
-        <>Home Page</>
-      </Route>
-      <Route path="/login">
-        <>Login Page</>
-      </Route>
+      <Route path="*" element={<Navigate to="/login" />} />
+      <Route path="/login" element={<Login />}></Route>
       {/* Rota protegida */}
       <Route
-        path="/dashboard"
+        path="/home"
         element={
           <PrivateRoute>
-            <>Dashboard Page</>
+            <Home />
           </PrivateRoute>
         }
       ></Route>

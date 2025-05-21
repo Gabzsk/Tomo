@@ -8,7 +8,7 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --color-background: var(--background);
+  --color-background: var(--color-background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
@@ -41,7 +41,32 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+@layer utilities {
+  .bg-primary {
+    background-color: var(--color-primary);
+  }
+
+  .hover\:bg-primary-hover:hover {
+    background-color: var(--color-primary-hover);
+  }
+
+  .text-foreground {
+    color: var(--color-foreground);
+  }
+
+  .bg-muted {
+    background-color: var(--color-muted);
+  }
+}
+
 :root {
+  --color-background: #fefcf8;
+  --color-foreground: #3e3e3e;
+  --color-primary: #5e8c61;
+  --color-primary-hover: #4c7351;
+  --color-secondary: #a47149;
+  --color-muted: #f5f1eb;
+  --color-highlight: #f7dcb9;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
