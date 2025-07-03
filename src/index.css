@@ -1,5 +1,12 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@600&display=swap");
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
 
 @custom-variant dark (&:is(.dark *));
 
@@ -45,6 +52,17 @@
   .bg-primary {
     background-color: var(--color-primary);
   }
+  .bg-home {
+    background-color: var(--color-home-background);
+  }
+
+  .text-primary {
+    color: var(--color-text-primary);
+  }
+
+  .text-paper {
+    color: var(--color-paper);
+  }
 
   .hover\:bg-primary-hover:hover {
     background-color: var(--color-primary-hover);
@@ -57,12 +75,53 @@
   .bg-muted {
     background-color: var(--color-muted);
   }
+
+  .wood {
+    background-color: var(--color-wood);
+  }
+
+  .leaf-light {
+    background-color: var(--color-leaf-light);
+  }
+
+  .leaf {
+    background-color: var(--color-leaf);
+  }
+
+  .leaf-dark {
+    background-color: var(--color-leaf-dark);
+  }
+
+  .paper {
+    background-color: var(--color-paper);
+  }
+
+  .border-soft {
+    background-color: var(--color-border-soft);
+  }
+
+  .bg-wood {
+    background-color: var(--color-wood);
+  }
+
+  .border-wood {
+    background-color: var(--color-border-wood);
+  }
 }
 
 :root {
-  --color-background: #fefcf8;
+  --color-background: #f4f1eb;
+  --color-wood: #8b5e3c;
+  --color-leaf: #4a5f2c;
+  --color-leaf-dark: #32421b;
+  --color-leaf-light: #709142;
+  --color-paper: #fff8f0;
+  --color-border-soft: #d6cfc1;
+  --color-border-wood: #796346;
+  --color-home-background: #f8f5ef;
   --color-foreground: #3e3e3e;
   --color-primary: #5e8c61;
+  --color-text-primary: #4a5f2c;
   --color-primary-hover: #4c7351;
   --color-secondary: #a47149;
   --color-muted: #f5f1eb;
@@ -141,5 +200,6 @@
   }
   body {
     @apply bg-background text-foreground;
+    @apply font-serif bg-background text-foreground;
   }
 }
