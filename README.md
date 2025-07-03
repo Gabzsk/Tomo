@@ -6,7 +6,7 @@ Tomo is a complete React App for me to show all the technologies I've learned so
 - TailwindCSS + Dark Mode
 - React Hook Form + Zod
 - Context API + React Query
+- Zustand
 - Firebase Auth + Firestore
 - Testes with Vitest + Testing Library
 - Deploy with Vercel
-- Commits with Husky + Emojis
