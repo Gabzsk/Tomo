@@ -13,15 +13,23 @@ import {
 import { useState } from "react";
 import { BookShelfView } from "@/shared/components/BookShelf/BookShelfView";
 import { useBooks } from "@/shared/hooks/useBooks";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { ChevronDownIcon, ChevronRightIcon } from "lucide-react";
-import { FilterSelect } from "@/shared/components/FilterSelect/FilterSelect";
+import Rating from "@mui/material/Rating";
+import { useFilterStore } from "@/shared/stores/useFilterStore";
+import {
+  statusOptions,
+  tagOptions,
+  minRatingValues,
+} from "@/shared/variables/FormVariables";
 
 export default function Home() {
   const { logout } = useAuth();
@@ -30,24 +38,32 @@ export default function Home() {
   // DIALOG STATE
   const [open, setOpen] = useState(false);
 
-  // FILTER STATES
-  const [selectedStatus, setSelectedStatus] = useState<string | undefined>();
-  const [selectedTag, setSelectedTag] = useState<string | undefined>();
-  const [minRating, setMinRating] = useState<string | undefined>();
-
-  // FILTER SECTION STATE
+  // // FILTER SECTION STATE
   const [filtersVisible, setFiltersVisible] = useState(false);
 
+  // ZUSTAND DATA
+  const {
+    selectedStatus,
+    selectedTag,
+    minRating,
+    setSelectedStatus,
+    setSelectedTag,
+    setMinRating,
+  } = useFilterStore();
+
+  // FILTER LOGIC
   const filteredBooks = books.filter((book) => {
-    const rating = book.rating ?? 0;
     const tags = book.tags ?? [];
-    const numericMinRating = Number(minRating);
+    const rating = book.rating ?? 0;
 
     const filteredStatus = !selectedStatus || book.status === selectedStatus;
     const filteredTag = !selectedTag || tags.includes(selectedTag);
-    const filteredRating = !minRating || rating >= numericMinRating;
+    const filteredRating = !minRating || rating >= minRating;
+
     return filteredStatus && filteredTag && filteredRating;
   });
+
+  const resetFilters = useFilterStore((state) => state.resetFilters);
 
   return (
     <div className="min-h-screen flex flex-col  font-serif">
@@ -65,7 +81,7 @@ export default function Home() {
       </header>
 
       {/* CONTEÚDO */}
-      <main className="relative flex-grow flex flex-col items-center px-4 py-10 bg-[#f6f1e7]">
+      <main className="relative flex-grow flex flex-col items-center px-4 py-10">
         <section className="max-w-2xl w-full text-center">
           <h2 className="text-[2rem] font-semibold font-serif  text-[#4A5F2C] mb-6 flex items-center justify-center gap-2">
             My bookshelf
@@ -103,28 +119,89 @@ export default function Home() {
         </section>
 
         {/* Filtros */}
-        <div className="flex items-center justify-between w-full max-w-3xl mt-4 mb-2 px-2">
-          <Card className="w-full max-w-sm">
-            <CardHeader>
-              <CardTitle className="text-xl font-semibold text-[#4A5F2C]">
-                Filters
-              </CardTitle>
-              <Button
-                variant="secondary"
-                size="icon"
-                className="size-8 text-sm text-[#4A5F2C] hover:underline hover:text-[#374a23]"
-                onClick={() => setFiltersVisible((prev) => !prev)}
-              >
-                {filtersVisible ? <ChevronDownIcon /> : <ChevronRightIcon />}
-              </Button>
-              <CardDescription>Filter all your books by status</CardDescription>
+        <div className="w-full flex justify-start max-w-3xl px-2 mt-4 mb-2">
+          <Card className="w-full max-w-xs bg-transparent border border-none shadow-none">
+            <CardHeader className="pb-2">
+              <div className="flex justify-start">
+                <CardTitle className="text-base opacity-90 text-[#4A5F2C]">
+                  Filters
+                </CardTitle>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-[#4A5F2C]/70 hover:text-[#374a23] size-6"
+                  onClick={() => setFiltersVisible((prev) => !prev)}
+                >
+                  {filtersVisible ? <ChevronDownIcon /> : <ChevronRightIcon />}
+                </Button>
+              </div>
             </CardHeader>
-            {/* conteúdo dos filtros aqui */}
+            {filtersVisible && (
+              <div className="flex flex-col gap-2 px-4 pb-4">
+                <Select
+                  value={selectedStatus ?? ""}
+                  onValueChange={setSelectedStatus}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Filter by status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {statusOptions.map((options) => (
+                      <SelectItem key={options.value} value={options.value}>
+                        {options.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                <Select
+                  value={selectedTag ?? ""}
+                  onValueChange={setSelectedTag}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Filter by Tag" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {tagOptions.map((options) => (
+                      <SelectItem key={options.value} value={options.value}>
+                        {options.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                <Select
+                  value={minRating?.toString() ?? ""}
+                  onValueChange={(value) => setMinRating(Number(value))}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Minimum rating" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {minRatingValues.map((star) => (
+                      <SelectItem key={star} value={star.toString()}>
+                        <Rating
+                          value={star}
+                          readOnly
+                          precision={0.5}
+                          size="small"
+                        />
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Button
+                  variant="ghost"
+                  className="text-x text-[#4A5F2C] hover:underline flex justify-start"
+                  onClick={resetFilters}
+                >
+                  Reset Filters
+                </Button>
+              </div>
+            )}
           </Card>
         </div>
-        {filtersVisible && <FilterSelect />}
 
-        {/* Lista de livros */}
         <section className="mt-6 w-full max-w-3xl">
           <BookShelfView books={filteredBooks} />
         </section>

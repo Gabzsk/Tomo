@@ -13,6 +13,11 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AddBookSchema, type AddBookInputs } from "@/schemas/AddBookSchema";
 import { PrimaryButton } from "@/components/PrimaryButton";
+import {
+  statusOptions,
+  tagOptions,
+  minRatingValues,
+} from "@/shared/variables/FormVariables";
 
 interface BookFormFieldsProps {
   defaultValues?: Partial<AddBookInputs>;
@@ -69,10 +74,11 @@ export function BookFormFields({
             <SelectValue placeholder="Select status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="wishlist">Wishlist</SelectItem>
-            <SelectItem value="to-read">To Read</SelectItem>
-            <SelectItem value="reading">Reading</SelectItem>
-            <SelectItem value="completed">Completed</SelectItem>
+            {statusOptions.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
         {errors.status && (
@@ -81,30 +87,25 @@ export function BookFormFields({
       </div>
 
       <div className="space-y-1">
-        <Label htmlFor="tags">Tags (comma separated)</Label>
-        <Input
-          id="tags"
-          type="text"
-          placeholder="fantasy, 2024, fiction"
-          {...register("tags")}
-        />
+        <Label htmlFor="tags">Tags</Label>
+        <Select
+          defaultValue={defaultValues?.tags}
+          onValueChange={(value) =>
+            setValue("tags", value as AddBookInputs["tags"])
+          }
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select Tag" />
+          </SelectTrigger>
+          <SelectContent>
+            {tagOptions.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
-
-      {/* <div className="space-y-1">
-        <Label htmlFor="rating">Rating</Label>
-        <Input
-          id="rating"
-          type="number"
-          min={1}
-          max={5}
-          step={1}
-          placeholder="1 to 5"
-          {...register("rating", { valueAsNumber: true })}
-        />
-        {errors.rating && (
-          <p className="text-sm text-red-500">{errors.rating.message}</p>
-        )}
-      </div> */}
 
       <div className="space-y-1 group">
         <Label htmlFor="rating">Rating</Label>
